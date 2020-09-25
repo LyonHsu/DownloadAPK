@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="alert_agree_btn_W">119dp</dimen>
+    <dimen name="alert_agree_btnn_H">47dp</dimen>
+    <dimen name="alert_agree_margin">42dp</dimen>
+</resources>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 20200923 apk download -->
+<paths>
+<!--    //這個指的是內容提供者 可以共享的路徑 external-path是內置儲存，path爲/Download
+//以上所有的意思是共享目錄爲 sdcard/Download-->
+    <external-path
+        name="Download"
+        path="/Download" />
+</paths>

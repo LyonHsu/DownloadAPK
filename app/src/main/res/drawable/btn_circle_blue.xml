@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item android:state_selected="true"  >
+        <shape xmlns:android="http://schemas.android.com/apk/res/android">
+            <stroke android:width="0dp" android:color="#bebebe" />
+            <!--設定圓角，當設置的圓角半徑很大，就可變成弧形邊了-->
+            <corners android:radius="150dip" />
+            <solid android:color="@color/fet_higlight_blue"></solid>
+        </shape>
+    </item>
+
+    <item android:state_pressed="true"   >
+        <shape xmlns:android="http://schemas.android.com/apk/res/android">
+            <stroke android:width="0dp" android:color="#bebebe" />
+            <!--設定圓角，當設置的圓角半徑很大，就可變成弧形邊了-->
+            <corners android:radius="150dip" />
+            <solid android:color="#1ba7b4"></solid>
+        </shape>
+    </item>
+
+    <item android:state_focused="true"    >
+        <shape xmlns:android="http://schemas.android.com/apk/res/android">
+            <stroke android:width="0dp" android:color="#bebebe" />
+            <!--設定圓角，當設置的圓角半徑很大，就可變成弧形邊了-->
+            <corners android:radius="150dip" />
+            <solid android:color="@color/fet_higlight_blue"></solid>
+        </shape>
+    </item>
+    <item>
+        <shape xmlns:android="http://schemas.android.com/apk/res/android">
+            <stroke android:width="1dp" android:color="#bebebe" />
+            <!--設定圓角，當設置的圓角半徑很大，就可變成弧形邊了-->
+            <corners android:radius="150dip" />
+            <!--<solid android:color="@color/fet_higlight_white"></solid>-->
+        </shape>
+    </item>
+</selector>

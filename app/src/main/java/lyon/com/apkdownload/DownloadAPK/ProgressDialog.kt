@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.Gravity
+import android.view.View
 import kotlinx.android.synthetic.main.apk_download_layout.*
 import lyon.com.apkdownload.R
 import lyon.com.apkdownload.Utils
@@ -37,6 +38,32 @@ open class ProgressDialog(context: Context): Dialog(context){
             textView3.setText(process.toString()+ " %")
             progressBar.setProgress(process)
         }catch (e:NullPointerException){
+//            Log.e(TAG,""+Utils.FormatStackTrace(e))
+        }
+    }
+
+    fun setSize(size:Int){
+        try{
+            size_text.visibility= View.VISIBLE
+            size_text.setText(size)
+        } catch (e: NullPointerException) {
+//            Log.e(TAG,""+Utils.FormatStackTrace(e))
+        }
+    }
+
+    fun setTime(time:Int){
+        try{
+            time_text.visibility= View.VISIBLE
+            time_text.setText(time.toString()+" 秒")
+        } catch (e: NullPointerException) {
+//            Log.e(TAG,""+Utils.FormatStackTrace(e))
+        }
+    }
+
+    fun setRateValue(rate:String) {
+        try {
+            textView2.setText(rate)
+        } catch (e: NullPointerException) {
 //            Log.e(TAG,""+Utils.FormatStackTrace(e))
         }
     }

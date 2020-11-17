@@ -26,9 +26,8 @@ class ApkDownload (val activity: Activity){
     val TAG = this::class.java.simpleName
     val downloadUrl = "https://event.3rd-evo.com/hanks/app-productionRelease_1.3.30.7_70_NewTV.apk"
     lateinit var mPermissionsChecker: PermissionsChecker
-    
-
-    
+    var startTime =0.0;
+    var nowTime = 0.0;
     fun DefaultDataCheck() {
         mPermissionsChecker = PermissionsChecker(activity)
         // 缺少权限时, 进入权限配置页面
@@ -37,6 +36,7 @@ class ApkDownload (val activity: Activity){
         }  else {
             Thread(object :Runnable{
                 override fun run() {
+                    startTime = System.currentTimeMillis().toDouble()
                     startDownload();
                 }
             }).start()
@@ -122,9 +122,25 @@ class ApkDownload (val activity: Activity){
                              */
                             val totalSize = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
                             var currentSize = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
+
+                            nowTime = System.currentTimeMillis().toDouble()
                             val progress =  (currentSize * 100.0 / totalSize).toInt()
+                            var totleTime = nowTime-startTime;
+                            val rate = Utils.getRate(currentSize,nowTime,startTime)
+                            var ratevalue:String
+                            if(rate > 1000)
+                                ratevalue = String.format("%.2f",rate/1024)+" Mbps"
+                            else
+                                ratevalue =  String.format("%.2f",rate).toString()+(" Kbps");
+                            Log.d(TAG,"20201117 網路= "+ratevalue+" bps, 花費時間："+totleTime)
                             Log.d(TAG,"currentSize:"+currentSize+"/totalSize:"+totalSize+" =progress:"+progress)
-                            handler.obtainMessage(DownloadManager.STATUS_RUNNING, progress.toInt()).sendToTarget();//傳送到主執行緒,更新ui
+                            val msg = Message()
+                            msg.what = DownloadManager.STATUS_RUNNING
+                            msg.obj = ratevalue +" / " +totalSize
+                            msg.arg1 = progress
+                            msg.arg2 = totleTime.toInt()/1000
+                            handler.sendMessage(msg)
+
                         }
                         DownloadManager.STATUS_PAUSED->{
                             //下載停止
@@ -164,8 +180,10 @@ class ApkDownload (val activity: Activity){
                     }
                 }
                 DownloadManager.STATUS_RUNNING ->{
-                    val progress =  msg.obj as Int;
+                    val progress =  msg.arg1 as Int;
                     progressBar.setProgress(progress)
+                    progressBar.setRateValue(msg.obj.toString())
+                    progressBar.setTime(msg.arg2)
                 }
                 DownloadManager.STATUS_FAILED -> canceledDialog()
                 DownloadManager.STATUS_PENDING -> progressBar.show()

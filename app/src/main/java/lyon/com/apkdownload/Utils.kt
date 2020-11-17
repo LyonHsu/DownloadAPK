@@ -67,4 +67,15 @@ object Utils {
             Log.e(TAG,""+ Utils.FormatStackTrace(e))
         }
     }
+
+    fun getRate(size:Int,endTime:Double,startTime:Double):Double{
+        if(endTime<=0)
+            return 0.0
+        if(startTime<=0)
+            return 0.0
+        var rate: Double = (size / 1024 / ((endTime - startTime) / 1000.0) * 8).toDouble()
+        rate = Math.round(rate * 100.0) / 100.0
+
+        return rate;
+    }
 }

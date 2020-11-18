@@ -33,6 +33,10 @@ open class ProgressDialog(context: Context): Dialog(context){
 
     }
 
+    fun setInstallButtonVisible(v:Int){
+        dialog_button_agree.visibility=v
+    }
+
     fun setProgress(process:Int){
         try {
             textView3.setText(process.toString()+ " %")
@@ -42,7 +46,16 @@ open class ProgressDialog(context: Context): Dialog(context){
         }
     }
 
-    fun setSize(size:Int){
+    fun setMsg(msg:String){
+        try {
+            msg_text.setText(msg)
+            msg_text.visibility = View.VISIBLE
+        }catch (e:NullPointerException){
+//            Log.e(TAG,""+Utils.FormatStackTrace(e))
+        }
+    }
+
+    fun setSize(size:String){
         try{
             size_text.visibility= View.VISIBLE
             size_text.setText(size)

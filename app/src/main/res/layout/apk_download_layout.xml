@@ -2,7 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#00ffffff"
     >
@@ -11,20 +11,44 @@
         android:id="@+id/download"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
         android:background="#ff333333"
         android:orientation="vertical">
+        <RelativeLayout
+            android:background="@color/white"
+            android:layout_gravity="center"
+            android:layout_width="100dp"
+            android:layout_height="100dp">
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/lyonhsu3_t"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                />
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:progressDrawable="@drawable/apk_progress_bar" />
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/msg_text"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="16dp"
-            android:background="@color/blue_light"
-            android:progressDrawable="@drawable/apk_progress_bar" />
+            android:gravity="center"
+            android:text="downloading....."
+            android:textColor="#fff" />
         <TextView
             android:id="@+id/size_text"
             android:visibility="gone"
@@ -79,6 +103,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/btn_circle_blue"
                 android:text="@string/insstall"
+                android:visibility="gone"
                 android:gravity="center"
                 android:textColor="@drawable/aleart_txt_white" />
 

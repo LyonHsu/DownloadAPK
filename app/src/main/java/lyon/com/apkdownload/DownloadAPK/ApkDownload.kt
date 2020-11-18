@@ -11,12 +11,14 @@ import android.os.Environment
 import android.os.Handler
 import android.os.Message
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import lyon.com.apkdownload.Permissions.PermissionsActivity
 import lyon.com.apkdownload.Permissions.PermissionsActivity.PERMISSIONS
 import lyon.com.apkdownload.Permissions.PermissionsChecker
 import lyon.com.apkdownload.Utils
+import org.json.JSONObject
 import java.io.File
 val REQUEST_CODE = 2 // 请求码
 var OVERLAY_PERMISSION_REQ_CODE = 1234
@@ -26,8 +28,10 @@ class ApkDownload (val activity: Activity){
     val TAG = this::class.java.simpleName
     val downloadUrl = "https://event.3rd-evo.com/hanks/app-productionRelease_1.3.30.7_70_NewTV.apk"
     lateinit var mPermissionsChecker: PermissionsChecker
-    var startTime =0.0;
-    var nowTime = 0.0;
+    var startTime =0.0
+    var nowTime = 0.0
+    var totalSize=0
+    var currentSize=0
     fun DefaultDataCheck() {
         mPermissionsChecker = PermissionsChecker(activity)
         // 缺少权限时, 进入权限配置页面
@@ -120,14 +124,16 @@ class ApkDownload (val activity: Activity){
                             /**
                              * 計算下載下載率;
                              */
-                            val totalSize = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
-                            var currentSize = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
+                            totalSize = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
+                            currentSize = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
 
                             nowTime = System.currentTimeMillis().toDouble()
                             val progress =  (currentSize * 100.0 / totalSize).toInt()
                             var totleTime = nowTime-startTime;
                             val rate = Utils.getRate(currentSize,nowTime,startTime)
                             var ratevalue:String
+                            var cSize:String
+                            var tSize:String
                             if(rate > 1000)
                                 ratevalue = String.format("%.2f",rate/1024)+" Mbps"
                             else
@@ -136,7 +142,19 @@ class ApkDownload (val activity: Activity){
                             Log.d(TAG,"currentSize:"+currentSize+"/totalSize:"+totalSize+" =progress:"+progress)
                             val msg = Message()
                             msg.what = DownloadManager.STATUS_RUNNING
-                            msg.obj = ratevalue +" / " +totalSize
+                            if(currentSize > 1000)
+                                cSize = String.format("%.2f",(currentSize/1024).toDouble())+" Mb"
+                            else
+                                cSize = String.format("%.2f",currentSize.toDouble()).toString()+(" Kb")
+
+                            if(totalSize > 1000)
+                                tSize = String.format("%.2f",(totalSize/1024).toDouble())+" Mb"
+                            else
+                                tSize = String.format("%.2f",totalSize.toDouble()).toString()+(" Kb")
+                            var json = JSONObject()
+                            json.put("rate",ratevalue)
+                            json.put("size",cSize+" / " +tSize)
+                            msg.obj = json
                             msg.arg1 = progress
                             msg.arg2 = totleTime.toInt()/1000
                             handler.sendMessage(msg)
@@ -167,22 +185,40 @@ class ApkDownload (val activity: Activity){
             when (msg.what) {
                 DownloadManager.STATUS_SUCCESSFUL -> {
                     progressBar.setProgress(100)
+                    var tSize:String
+                    var cSize:String
+                    if(totalSize > 1000)
+                        tSize = String.format("%.2f",(totalSize/1024).toDouble())+" Mb"
+                    else
+                        tSize = String.format("%.2f",totalSize.toDouble()).toString()+(" Kb")
+                    if(currentSize > 1000)
+                        cSize = String.format("%.2f",(currentSize/1024).toDouble())+" Mb"
+                    else
+                        cSize = String.format("%.2f",currentSize.toDouble()).toString()+(" Kb")
 //                    Toast.makeText(activity, "下載任務已經完成!", Toast.LENGTH_SHORT).show()
 //                    AppController.getInstance().getMainActivity().finish();
                     val file = File(downLoadPath+fileName)
                     if(file.exists()) {
+                        progressBar.setInstallButtonVisible(View.VISIBLE)
                         Log.d(TAG, "install start()!")
+                        progressBar.setMsg("下載任務已經完成!")
+                        progressBar.setSize(tSize+" / "+tSize)
                         Toast.makeText(activity, "下載任務已經完成!", Toast.LENGTH_SHORT).show()
 //                        activity.finish()
                     }else{
+                        progressBar.setInstallButtonVisible(View.GONE)
                         Log.d(TAG, "install fail()!")
+                        progressBar.setMsg("找不到下載檔案!下載失敗！！")
+                        progressBar.setSize(cSize+" / "+tSize)
                         Toast.makeText(activity, "找不到檔案!", Toast.LENGTH_SHORT).show()
                     }
                 }
                 DownloadManager.STATUS_RUNNING ->{
                     val progress =  msg.arg1 as Int;
                     progressBar.setProgress(progress)
-                    progressBar.setRateValue(msg.obj.toString())
+                    var json = JSONObject(msg.obj.toString())
+                    progressBar.setRateValue(json.optString("rate"))
+                    progressBar.setSize(json.optString("size"))
                     progressBar.setTime(msg.arg2)
                 }
                 DownloadManager.STATUS_FAILED -> canceledDialog()

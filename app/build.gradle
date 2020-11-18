@@ -11,15 +11,41 @@ android {
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
-        versionName "1.2"
+        versionName "1.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        keyConfig {
+            storeFile file("Lyon.keystore")
+            storePassword "a12345"
+            keyAlias "tw"
+            keyPassword "a12345"
+        }
+    }
     buildTypes {
         release {
-            minifyEnabled false
+            // signingConfig signingConfigs.keyConfig
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            manifestPlaceholders = [isDeBug: false]
+        }
+        debug {
+            //signingConfig signingConfigs.keyConfig
+            minifyEnabled false
+            debuggable true
+            manifestPlaceholders = [isDeBug: true]
+        }
+    }
+    flavorDimensions "lyonstock"
+    productFlavors {
+        staging {
+            applicationId 'lyon.com.apkdownload.staging'
+        }
+        production {
+            applicationId 'lyon.com.apkdownload'
         }
     }
 

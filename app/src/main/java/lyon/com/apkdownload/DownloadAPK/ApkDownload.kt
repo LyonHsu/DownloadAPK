@@ -32,6 +32,11 @@ class ApkDownload (val activity: Activity){
     var nowTime = 0.0
     var totalSize=0
     var currentSize=0
+
+    fun close(){
+
+    }
+
     fun DefaultDataCheck() {
         mPermissionsChecker = PermissionsChecker(activity)
         // 缺少权限时, 进入权限配置页面
@@ -79,7 +84,7 @@ class ApkDownload (val activity: Activity){
     fun CreateRequest(url:String): DownloadManager.Request{
         val request = DownloadManager.Request(Uri.parse(url))
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN) // 隱藏notification
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI) //設定下載網路環境為wifi
+        //request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI) //設定下載網路環境為wifi
         downLoadPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path //activity.getExternalFilesDir(packageName).path
         val dir = File(downLoadPath)
         if (!dir.exists()) {
@@ -239,7 +244,10 @@ class ApkDownload (val activity: Activity){
                     progressBar.setTime(msg.arg2)
                 }
                 DownloadManager.STATUS_FAILED -> canceledDialog()
-                DownloadManager.STATUS_PENDING -> progressBar.show()
+                DownloadManager.STATUS_PENDING ->{
+                    progressBar.show()
+                    progressBar.setRateValue("下載延遲！")
+                }
             }
         }
     }

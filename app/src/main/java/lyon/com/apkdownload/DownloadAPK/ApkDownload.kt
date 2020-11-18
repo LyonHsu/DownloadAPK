@@ -142,15 +142,23 @@ class ApkDownload (val activity: Activity){
                             Log.d(TAG,"currentSize:"+currentSize+"/totalSize:"+totalSize+" =progress:"+progress)
                             val msg = Message()
                             msg.what = DownloadManager.STATUS_RUNNING
-                            if(currentSize > 1000)
-                                cSize = String.format("%.2f",(currentSize/1024).toDouble())+" Mb"
+                            if(totalSize > 1000*1000*1000)
+                                tSize = String.format("%.2f",(totalSize/1024/1024/1024).toDouble())+" GB"
+                            else if(totalSize > 1000*1000)
+                                tSize = String.format("%.2f",(totalSize/1024/1024).toDouble())+" MB"
+                            else if(totalSize > 1000)
+                                tSize = String.format("%.2f",(totalSize/1024).toDouble())+" KB"
                             else
-                                cSize = String.format("%.2f",currentSize.toDouble()).toString()+(" Kb")
+                                tSize = String.format("%.2f",totalSize.toDouble()).toString()+(" B")
 
-                            if(totalSize > 1000)
-                                tSize = String.format("%.2f",(totalSize/1024).toDouble())+" Mb"
+                            if(currentSize > 1000*1000*1000)
+                                cSize = String.format("%.2f",(currentSize/1024/1024/1024).toDouble())+" GB"
+                            else if(currentSize > 1000*1000)
+                                cSize = String.format("%.2f",(currentSize/1024/1024).toDouble())+" MB"
+                            else if(currentSize > 1000)
+                                cSize = String.format("%.2f",(currentSize/1024).toDouble())+" KB"
                             else
-                                tSize = String.format("%.2f",totalSize.toDouble()).toString()+(" Kb")
+                                cSize = String.format("%.2f",currentSize.toDouble()).toString()+(" B")
                             var json = JSONObject()
                             json.put("rate",ratevalue)
                             json.put("size",cSize+" / " +tSize)
@@ -187,14 +195,23 @@ class ApkDownload (val activity: Activity){
                     progressBar.setProgress(100)
                     var tSize:String
                     var cSize:String
-                    if(totalSize > 1000)
-                        tSize = String.format("%.2f",(totalSize/1024).toDouble())+" Mb"
+                    if(totalSize > 1000*1000*1000)
+                        tSize = String.format("%.2f",(totalSize/1024/1024/1024).toDouble())+" GB"
+                    else if(totalSize > 1000*1000)
+                        tSize = String.format("%.2f",(totalSize/1024/1024).toDouble())+" MB"
+                    else if(totalSize > 1000)
+                        tSize = String.format("%.2f",(totalSize/1024).toDouble())+" KB"
                     else
-                        tSize = String.format("%.2f",totalSize.toDouble()).toString()+(" Kb")
-                    if(currentSize > 1000)
-                        cSize = String.format("%.2f",(currentSize/1024).toDouble())+" Mb"
+                        tSize = String.format("%.2f",totalSize.toDouble()).toString()+(" B")
+
+                    if(currentSize > 1000*1000*1000)
+                        cSize = String.format("%.2f",(currentSize/1024/1024/1024).toDouble())+" GB"
+                    else if(currentSize > 1000*1000)
+                        cSize = String.format("%.2f",(currentSize/1024/1024).toDouble())+" MB"
+                    else if(currentSize > 1000)
+                        cSize = String.format("%.2f",(currentSize/1024).toDouble())+" KB"
                     else
-                        cSize = String.format("%.2f",currentSize.toDouble()).toString()+(" Kb")
+                        cSize = String.format("%.2f",currentSize.toDouble()).toString()+(" B")
 //                    Toast.makeText(activity, "下載任務已經完成!", Toast.LENGTH_SHORT).show()
 //                    AppController.getInstance().getMainActivity().finish();
                     val file = File(downLoadPath+fileName)

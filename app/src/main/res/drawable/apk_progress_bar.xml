@@ -10,7 +10,8 @@
 
         <gradient
             android:angle="0"
-            android:endColor="#5900FF"
+            android:endColor="#7F3CFF"
+            android:centerColor="#005EAF"
             android:startColor="#02EAFF"
             android:type="sweep"
             android:useLevel="false" />
